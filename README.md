@@ -1,6 +1,5 @@
 # KernelSwift 2026 Triton 算子优化
 
-[![文档站构建状态](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/actions/workflows/docs.yml/badge.svg)](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/actions/workflows/docs.yml)
 [![在线教程](https://img.shields.io/badge/在线教程-GitHub_Pages-315efb)](https://mantuoluozk.github.io/kernelswift-2026-triton-kernels/)
 
 **在线教程：** [从零学习 Triton 算子开发与优化——BW1000 十题实战](https://mantuoluozk.github.io/kernelswift-2026-triton-kernels/)
