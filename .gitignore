@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.remote-dev.json
+.pytest_cache/
+.venv/
+.venv-docs/
+build/
+dist/
+site/

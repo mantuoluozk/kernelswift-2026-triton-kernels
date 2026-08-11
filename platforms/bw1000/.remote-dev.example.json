@@ -1,0 +1,14 @@
+{
+  "server": "YOUR_SERVER_IP",
+  "user": "root",
+  "container": "zk-triton-0810",
+  "remote_path": "/data/zk",
+  "sync_exclude": [
+    ".git",
+    "__pycache__",
+    ".venv",
+    ".pytest_cache",
+    "build",
+    "dist"
+  ]
+}

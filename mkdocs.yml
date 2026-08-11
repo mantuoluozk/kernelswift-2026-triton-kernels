@@ -1,0 +1,100 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+site_name: KernelSwift Triton 算子优化教程
+site_description: 面向 Triton 与算子优化初学者的海光 BW1000 十题实战教程
+site_author: mantuoluozk
+site_url: https://mantuoluozk.github.io/kernelswift-2026-triton-kernels/
+repo_url: https://github.com/mantuoluozk/kernelswift-2026-triton-kernels
+repo_name: mantuoluozk/kernelswift-2026-triton-kernels
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: zh
+  font: false
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - content.code.copy
+    - content.action.edit
+    - content.action.view
+    - search.suggest
+    - search.highlight
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: cyan
+      toggle:
+        icon: material/weather-night
+        name: 切换到深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: cyan
+      toggle:
+        icon: material/weather-sunny
+        name: 切换到浅色模式
+
+nav:
+  - 首页: index.md
+  - 从零开始:
+      - 学习路线: tutorial/README.md
+      - 整体认识: tutorial/00_整体认识与学习路线.md
+      - BW1000 环境与评测: tutorial/01_BW1000环境与评测.md
+      - Triton 编程基础: tutorial/02_Triton编程基础.md
+      - 算子优化方法论: tutorial/03_算子优化方法论.md
+  - 十题实战:
+      - 01 · GroupedTopk: tutorial/tasks/01_GroupedTopk.md
+      - 02 · FusedMoE: tutorial/tasks/02_FusedMoE.md
+      - 03 · FlexAttention: tutorial/tasks/03_FlexAttention.md
+      - 04 · SPLADESparsePooler: tutorial/tasks/04_SPLADESparsePooler.md
+      - 05 · RotaryEmbedding: tutorial/tasks/05_RotaryEmbedding.md
+      - 06 · MMEncoderAttention: tutorial/tasks/06_MMEncoderAttention.md
+      - 07 · mhc_post: tutorial/tasks/07_mhc_post.md
+      - 08 · hc_split_sinkhorn: tutorial/tasks/08_hc_split_sinkhorn.md
+      - 09 · CentreRandomAugmentation: tutorial/tasks/09_CentreRandomAugmentation.md
+      - 10 · head_compute_mix_bwd: tutorial/tasks/10_head_compute_mix_bwd.md
+  - 项目资料:
+      - 比赛说明: 比赛说明.md
+      - 提交清单: 提交清单.md
+      - 提交邮件模板: 提交邮件模板.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/mantuoluozk/kernelswift-2026-triton-kernels
+      name: GitHub 仓库
+
+copyright: Copyright &copy; 2026 mantuoluozk · KernelSwift Triton 算子优化实践
