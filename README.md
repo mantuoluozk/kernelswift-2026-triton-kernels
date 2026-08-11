@@ -1,5 +1,10 @@
 # KernelSwift 2026 Triton 算子优化
 
+[![文档站构建状态](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/actions/workflows/docs.yml/badge.svg)](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/actions/workflows/docs.yml)
+[![在线教程](https://img.shields.io/badge/在线教程-GitHub_Pages-315efb)](https://mantuoluozk.github.io/kernelswift-2026-triton-kernels/)
+
+**在线教程：** [从零学习 Triton 算子开发与优化——BW1000 十题实战](https://mantuoluozk.github.io/kernelswift-2026-triton-kernels/)
+
 本仓库包含 2026 KernelSwift 算子创新大赛赛道一的 Triton 优化实现。代码按芯片平台组织，当前已完成并验证海光 BW1000 平台的 10 个任务；后续申请到其他芯片资源后，可在 `platforms/` 下继续增加实现。
 
 ## 仓库结构
