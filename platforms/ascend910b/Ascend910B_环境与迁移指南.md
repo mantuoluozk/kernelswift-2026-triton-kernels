@@ -35,6 +35,8 @@ source platforms/ascend910b/setup_env.sh
 
 选择 `--system-site-packages` 是为了复用实例中与 CANN 配套的 torch_npu，而不是从 PyPI 覆盖厂商环境。Triton-Ascend 及其固定依赖安装在独立虚拟环境中，不污染系统 Python。
 
+实际使用的 openEuler、aarch64、CANN 安装信息、Python 包来源、完整命令和故障排查已单独保存在 [环境安装记录](环境安装记录.md)，方便在同类新实例上逐项复现。
+
 参考：[Triton-Ascend 官方仓库](https://github.com/triton-lang/triton-ascend)、[3.2.1 发布页](https://github.com/triton-lang/triton-ascend/releases/tag/v3.2.1)。
 
 ## 在线实例与设备编号

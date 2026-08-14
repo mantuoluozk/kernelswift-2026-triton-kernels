@@ -24,13 +24,14 @@ Triton Python 层仍使用 `@triton.jit`、`tl.load`、`tl.store`、`tl.dot` 和
 | 组件 | 版本 |
 | --- | --- |
 | 设备 | Ascend 910B1 |
+| 操作系统 | openEuler 24.03 LTS-SP2（aarch64） |
 | CANN | 9.0.0 |
 | Python | 3.11.15 |
-| PyTorch | 2.10.0 |
+| PyTorch | 2.10.0+cpu |
 | torch_npu | 2.10.0 |
 | Triton-Ascend | 3.2.1 |
 
-系统已经提供 CANN 与 torch_npu。Triton-Ascend 安装在带 `--system-site-packages` 的独立虚拟环境中，从而复用厂商 torch_npu，又不覆盖系统包：
+这里的 `+cpu` 是 PyTorch 基础包的构建标识，NPU 后端由 torch_npu 注册，并不表示本环境只能用 CPU。系统已经提供驱动、CANN 与 torch_npu；项目只在带 `--system-site-packages` 的独立虚拟环境中安装 Triton-Ascend，从而复用厂商软件栈，又不覆盖系统包：
 
 ```bash
 cd /data/kernelswift-2026-triton-kernels
@@ -44,7 +45,7 @@ source platforms/ascend910b/setup_env.sh
 python platforms/ascend910b/smoke_test.py
 ```
 
-参考：[Triton-Ascend 官方仓库](https://github.com/triton-lang/triton-ascend)。
+完整的安装前检查、脚本展开命令、环境变量来源和常见错误见仓库中的 [`platforms/ascend910b/环境安装记录.md`](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/ascend910b/%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95.md)。参考：[Triton-Ascend 官方仓库](https://github.com/triton-lang/triton-ascend)。
 
 ## 3. 容器内编号与物理编号
 
