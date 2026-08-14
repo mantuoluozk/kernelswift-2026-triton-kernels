@@ -30,7 +30,7 @@
 | [Task10 backward](tasks/10_head_compute_mix_bwd.md) | 手写反向、多个梯度归约、静态专用化 | 3/5 | 1.846× | 1.636× | 1.064× |
 | **十项简单合计** | 仅作直观比较 | — | **6.702×** | **7.071×** | **3.752×** |
 
-三列数据均使用同一官方评测器和 `warmup=200`、`repeat=500` 参数，10 项正确性全部通过。昇腾 910B 的 PyTorch/Triton 十项耗时简单合计为 `17.297547/4.610002 ms`；完整逐项耗时、环境与迁移说明见 [Ascend 910B 平台 README](../../platforms/ascend910b/README.md)。简单合计不代表官方跨任务或跨平台评分。
+三列数据均使用同一官方评测器和 `warmup=200`、`repeat=500` 参数，10 项正确性全部通过。昇腾 910B 的 PyTorch/Triton 十项耗时简单合计为 `17.297547/4.610002 ms`；完整逐项耗时、环境与迁移说明见 [Ascend 910B 平台 README](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/ascend910b/README.md)。简单合计不代表官方跨任务或跨平台评分。
 
 ## 学完后应该具备的能力
 
