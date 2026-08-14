@@ -61,19 +61,19 @@ kernelswift-2026-triton-kernels/
 
 测试环境为沐曦 C500 的 25% sGPU 切片、MACA 3.0.0.8、mcPyTorch 2.4.0+metax3.0.0.3、mcTriton 3.0.0+metax3.0.0.3。评测参数同样为 `warmup=200`、`repeat=500`，结果取中位数，10 项正确性检查全部通过。
 
-| 任务 | 算子 | Triton（ms） | 加速比 | 正确性 | 迁移说明 |
-| --- | --- | ---: | ---: | --- | --- |
-| [Task01](platforms/muxi_c500/task01_grouped_topk/README.md) | GroupedTopk | 0.097445 | 3.442x | PASS | BW1000 实现可复用 |
-| [Task02](platforms/muxi_c500/task02_fused_moe/README.md) | FusedMoE | 0.153823 | 18.943x | PASS | BW1000 实现可复用 |
-| [Task03](platforms/muxi_c500/task03_flex_attention/README.md) | FlexAttention | 0.102738 | 1.247x | PASS | 算法可复用，tile 仍可调优 |
-| [Task04](platforms/muxi_c500/task04_splade_sparse_pooler/README.md) | SPLADESparsePooler | 0.411690 | 2.384x | PASS | 矩阵 tile 仍可调优 |
-| [Task05](platforms/muxi_c500/task05_music_flamingo_rotary_embedding/README.md) | MusicFlamingoRotaryEmbedding | 0.094623 | 2.387x | PASS | BW1000 实现可复用 |
-| [Task06](platforms/muxi_c500/task06_mm_encoder_attention/README.md) | MMEncoderAttention | 0.106350 | 1.285x | PASS | Attention tile 仍可调优 |
-| [Task07](platforms/muxi_c500/task07_mhc_post/README.md) | mhc_post | 0.243420 | 16.745x | PASS | 设置 NCHW 后复用高性能 kernel |
-| [Task08](platforms/muxi_c500/task08_hc_split_sinkhorn/README.md) | hc_split_sinkhorn | 0.148244 | 10.697x | PASS | 显式标量化 4×4 Sinkhorn |
-| [Task09](platforms/muxi_c500/task09_centre_random_augmentation/README.md) | CentreRandomAugmentation | 0.166514 | 5.797x | PASS | BW1000 实现可复用 |
-| [Task10](platforms/muxi_c500/task10_head_compute_mix_bwd/README.md) | head_compute_mix_bwd | 0.104272 | 1.636x | PASS | 归约参数仍可调优 |
-| **十项简单合计** | — | **1.629119** | **7.071x** | **全部通过** | PyTorch 合计 **11.519283 ms** |
+| 任务 | 算子 | PyTorch（ms） | Triton（ms） | 加速比 | 正确性 | 迁移说明 |
+| --- | --- | ---: | ---: | ---: | --- | --- |
+| [Task01](platforms/muxi_c500/task01_grouped_topk/README.md) | GroupedTopk | 0.335406 | 0.097445 | 3.442x | PASS | BW1000 实现可复用 |
+| [Task02](platforms/muxi_c500/task02_fused_moe/README.md) | FusedMoE | 2.913869 | 0.153823 | 18.943x | PASS | BW1000 实现可复用 |
+| [Task03](platforms/muxi_c500/task03_flex_attention/README.md) | FlexAttention | 0.128114 | 0.102738 | 1.247x | PASS | 算法可复用，tile 仍可调优 |
+| [Task04](platforms/muxi_c500/task04_splade_sparse_pooler/README.md) | SPLADESparsePooler | 0.981469 | 0.411690 | 2.384x | PASS | 矩阵 tile 仍可调优 |
+| [Task05](platforms/muxi_c500/task05_music_flamingo_rotary_embedding/README.md) | MusicFlamingoRotaryEmbedding | 0.225865 | 0.094623 | 2.387x | PASS | BW1000 实现可复用 |
+| [Task06](platforms/muxi_c500/task06_mm_encoder_attention/README.md) | MMEncoderAttention | 0.136660 | 0.106350 | 1.285x | PASS | Attention tile 仍可调优 |
+| [Task07](platforms/muxi_c500/task07_mhc_post/README.md) | mhc_post | 4.076068 | 0.243420 | 16.745x | PASS | 设置 NCHW 后复用高性能 kernel |
+| [Task08](platforms/muxi_c500/task08_hc_split_sinkhorn/README.md) | hc_split_sinkhorn | 1.585766 | 0.148244 | 10.697x | PASS | 显式标量化 4×4 Sinkhorn |
+| [Task09](platforms/muxi_c500/task09_centre_random_augmentation/README.md) | CentreRandomAugmentation | 0.965282 | 0.166514 | 5.797x | PASS | BW1000 实现可复用 |
+| [Task10](platforms/muxi_c500/task10_head_compute_mix_bwd/README.md) | head_compute_mix_bwd | 0.170589 | 0.104272 | 1.636x | PASS | 归约参数仍可调优 |
+| **十项简单合计** | — | **11.519283** | **1.629119** | **7.071x** | **全部通过** | — |
 
 > C500 合计同样只用于直观汇总，不代表官方综合评分。完整环境配置、显卡监控、Tensor 布局和海光迁移差异参见 [C500 平台说明](platforms/muxi_c500/README.md)与 [C500 环境与迁移指南](platforms/muxi_c500/C500_环境与迁移指南.md)。
 
