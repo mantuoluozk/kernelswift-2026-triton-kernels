@@ -2,9 +2,9 @@
 
 [![在线教程](https://img.shields.io/badge/在线教程-GitHub_Pages-315efb)](https://mantuoluozk.github.io/kernelswift-2026-triton-kernels/)
 
-**在线教程：** [从零学习 Triton 算子开发与优化——BW1000 十题实战](https://mantuoluozk.github.io/kernelswift-2026-triton-kernels/)
+**在线教程：** [从零学习 Triton 算子开发与优化——BW1000 与 C500 十题实战](https://mantuoluozk.github.io/kernelswift-2026-triton-kernels/)
 
-本仓库包含 2026 KernelSwift 算子创新大赛赛道一的 Triton 优化实现。代码按芯片平台组织，当前已完成并验证海光 BW1000 平台的 10 个任务；后续申请到其他芯片资源后，可在 `platforms/` 下继续增加实现。
+本仓库包含 2026 KernelSwift 算子创新大赛赛道一的 Triton 优化实现。代码按芯片平台组织，当前已完成并验证海光 BW1000 与沐曦 C500 两个平台的 10 个任务。
 
 ## 仓库结构
 
@@ -14,11 +14,12 @@ kernelswift-2026-triton-kernels/
 ├── evaluator/                    # 官方 auto_bench.py 与上游许可证
 ├── platforms/
 │   ├── README.md                 # 多平台目录约定
-│   └── bw1000/
+│   ├── bw1000/
 │       ├── README.md             # BW1000 环境与成绩
 │       ├── docker_create.sh      # 创建或进入测试容器
 │       ├── run_all_benchmarks.sh # 一键运行 10 项官方评测
 │       └── task01...task10/      # 参考实现、优化实现和任务说明
+│   └── muxi_c500/                # C500 环境、迁移指南和 10 项实现
 └── README.md
 ```
 
@@ -34,7 +35,7 @@ kernelswift-2026-triton-kernels/
 | 芯片平台 | 任务进度 | 正确性 | 状态 |
 | --- | ---: | --- | --- |
 | 海光 BW1000 | 10 / 10 | 全部通过 | 可提交 |
-| 其他比赛支持平台 | 0 / 10 | 待验证 | 待申请资源 |
+| 沐曦 C500（25% sGPU） | 10 / 10 | 全部通过 | 可复现 |
 
 ## BW1000 优化结果
 
