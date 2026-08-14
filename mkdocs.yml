@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
 site_name: KernelSwift Triton 算子优化教程
-site_description: 面向 Triton 与算子优化初学者的海光 BW1000、沐曦 C500 十题实战教程
+site_description: 面向 Triton 与算子优化初学者的海光 BW1000、沐曦 C500、Ascend 910B 十题实战教程
 site_author: mantuoluozk
 site_url: https://mantuoluozk.github.io/kernelswift-2026-triton-kernels/
 repo_url: https://github.com/mantuoluozk/kernelswift-2026-triton-kernels
@@ -53,6 +53,7 @@ nav:
       - Triton 编程基础: tutorial/02_Triton编程基础.md
       - 算子优化方法论: tutorial/03_算子优化方法论.md
       - C500 环境与海光迁移: tutorial/04_C500环境与海光迁移.md
+      - Ascend 910B 环境与迁移: tutorial/05_Ascend910B环境与迁移.md
   - 十题实战:
       - 01 · GroupedTopk: tutorial/tasks/01_GroupedTopk.md
       - 02 · FusedMoE: tutorial/tasks/02_FusedMoE.md

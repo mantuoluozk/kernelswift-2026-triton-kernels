@@ -1,6 +1,9 @@
 __pycache__/
 *.py[cod]
 .remote-dev.json
+.remote-dev-*.json
+.remote-dev-askpass.cmd
+.remote-dev-askpass.exe
 .pytest_cache/
 .venv/
 .venv-docs/

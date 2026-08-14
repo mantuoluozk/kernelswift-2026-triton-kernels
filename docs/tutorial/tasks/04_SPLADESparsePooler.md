@@ -141,6 +141,12 @@ max_abs_diff ≈ 5.4e-4
 
 收益来自三层：GELU+LayerNorm 融合、激活移到 max 后、decoder+pool 融合避免巨大 logits。
 
+### Ascend 910B 的融合边界
+
+910B 上的 direct decoder+pool kernel 会触发 507014 AICore watchdog 超时。因此 910B 版本保留 GELU+LayerNorm Triton kernel，让 torch_npu 执行 decoder GEMM，再用 `BLOCK_N=2048` 的 Triton kernel 融合四段 max 与最终激活。正式结果为 `0.721766 → 0.659824 ms`，加速 `1.094×`。
+
+这说明融合决策必须受单 kernel 执行时间和后端代码生成质量约束；在一个平台上有效的全融合，不一定能原样迁移到另一个平台。
+
 ## 10. 迁移练习
 
 1. 用 profiler 比较 materialized 与 direct 两条路径的 kernel 数和显存流量；

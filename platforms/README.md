@@ -10,3 +10,4 @@
 | --- | --- | --- |
 | [`bw1000/`](bw1000/README.md) | 海光 BW1000 | 10 项任务已完成 |
 | [`muxi_c500/`](muxi_c500/README.md) | 沐曦 C500（25% sGPU） | 10 项正式回归全部通过 |
+| [`ascend910b/`](ascend910b/README.md) | Ascend 910B1 | 10 项正式回归全部通过 |

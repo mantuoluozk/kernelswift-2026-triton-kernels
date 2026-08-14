@@ -2,9 +2,9 @@
 
 [![在线教程](https://img.shields.io/badge/在线教程-GitHub_Pages-315efb)](https://mantuoluozk.github.io/kernelswift-2026-triton-kernels/)
 
-**在线教程：** [从零学习 Triton 算子开发与优化——BW1000 与 C500 十题实战](https://mantuoluozk.github.io/kernelswift-2026-triton-kernels/)
+**在线教程：** [从零学习 Triton 算子开发与优化——三平台十题实战](https://mantuoluozk.github.io/kernelswift-2026-triton-kernels/)
 
-本仓库包含 2026 KernelSwift 算子创新大赛赛道一的 Triton 优化实现。代码按芯片平台组织，当前已完成并验证海光 BW1000 与沐曦 C500 两个平台的 10 个任务。
+本仓库包含 2026 KernelSwift 算子创新大赛赛道一的 Triton 优化实现。代码按芯片平台组织，当前已完成并验证海光 BW1000、沐曦 C500 与 Ascend 910B 三个平台的 10 个任务。
 
 ## 仓库结构
 
@@ -19,7 +19,8 @@ kernelswift-2026-triton-kernels/
 │       ├── docker_create.sh      # 创建或进入测试容器
 │       ├── run_all_benchmarks.sh # 一键运行 10 项官方评测
 │       └── task01...task10/      # 参考实现、优化实现和任务说明
-│   └── muxi_c500/                # C500 环境、迁移指南和 10 项实现
+│   ├── muxi_c500/                # C500 环境、迁移指南和 10 项实现
+│   └── ascend910b/               # 910B 环境、迁移指南和 10 项实现
 └── README.md
 ```
 
@@ -36,6 +37,7 @@ kernelswift-2026-triton-kernels/
 | --- | ---: | --- | --- |
 | 海光 BW1000 | 10 / 10 | 全部通过 | 可提交 |
 | 沐曦 C500（25% sGPU） | 10 / 10 | 全部通过 | 可复现 |
+| Ascend 910B1 | 10 / 10 | 全部通过 | 可复现 |
 
 ## BW1000 优化结果
 
@@ -77,6 +79,26 @@ kernelswift-2026-triton-kernels/
 
 > C500 合计同样只用于直观汇总，不代表官方综合评分。完整环境配置、显卡监控、Tensor 布局和海光迁移差异参见 [C500 平台说明](platforms/muxi_c500/README.md)与 [C500 环境与迁移指南](platforms/muxi_c500/C500_环境与迁移指南.md)。
 
+## Ascend 910B 优化结果
+
+测试环境为 Ascend 910B1、CANN 9.0.0、PyTorch/torch_npu 2.10.0、Triton-Ascend 3.2.1、Python 3.11.15。评测参数为 `warmup=200`、`repeat=500`，10 项正确性检查全部通过。
+
+| 任务 | 算子 | PyTorch（ms） | Triton（ms） | 加速比 | 正确性 | 迁移说明 |
+| --- | --- | ---: | ---: | ---: | --- | --- |
+| [Task01](platforms/ascend910b/task01_grouped_topk/README.md) | GroupedTopk | 0.701666 | 0.283144 | 2.478x | PASS | 选择与归一化直接复用 |
+| [Task02](platforms/ascend910b/task02_fused_moe/README.md) | FusedMoE | 6.942960 | 0.606584 | 11.446x | PASS | 路由与分阶段 GEMM 直接复用 |
+| [Task03](platforms/ascend910b/task03_flex_attention/README.md) | FlexAttention | 0.372326 | 0.303849 | 1.225x | PASS | query tile 调为 32×32 |
+| [Task04](platforms/ascend910b/task04_splade_sparse_pooler/README.md) | SPLADESparsePooler | 0.721766 | 0.659824 | 1.094x | PASS | 拆分 decoder 与池化，避开 watchdog |
+| [Task05](platforms/ascend910b/task05_music_flamingo_rotary_embedding/README.md) | MusicFlamingoRotaryEmbedding | 0.535493 | 0.286519 | 1.869x | PASS | 逐元素融合直接复用 |
+| [Task06](platforms/ascend910b/task06_mm_encoder_attention/README.md) | MMEncoderAttention | 0.349675 | 0.300920 | 1.162x | PASS | query tile 调为 32 |
+| [Task07](platforms/ascend910b/task07_mhc_post/README.md) | mhc_post | 1.980275 | 0.822972 | 2.406x | PASS | 大张量融合直接复用 |
+| [Task08](platforms/ascend910b/task08_hc_split_sinkhorn/README.md) | hc_split_sinkhorn | 3.032301 | 0.329475 | 9.203x | PASS | 4×4 标量化 Sinkhorn 直接复用 |
+| [Task09](platforms/ascend910b/task09_centre_random_augmentation/README.md) | CentreRandomAugmentation | 2.301964 | 0.679200 | 3.389x | PASS | 随机变换融合直接复用 |
+| [Task10](platforms/ascend910b/task10_head_compute_mix_bwd/README.md) | head_compute_mix_bwd | 0.359121 | 0.337515 | 1.064x | PASS | 两个 4096 tile，atomic 汇总 |
+| **十项简单合计** | — | **17.297547** | **4.610002** | **3.752x** | **全部通过** | — |
+
+> 910B 合计只用于直观汇总，不代表官方综合评分。完整环境、安装、UB 限制和 AICore watchdog 排错过程参见 [910B 平台说明](platforms/ascend910b/README.md)与 [910B 环境与迁移指南](platforms/ascend910b/Ascend910B_环境与迁移指南.md)。
+
 ## 复现 BW1000 结果
 
 先确认空闲设备，再进入平台目录：
@@ -111,7 +133,7 @@ HIP_VISIBLE_DEVICES=0 python3 ../../evaluator/auto_bench.py \
 
 Docker 镜像、容器参数和完整结果参见 [BW1000 平台说明](platforms/bw1000/README.md)。比赛规则与交付要求参见 [比赛说明](docs/比赛说明.md) 和 [提交清单](docs/提交清单.md)。本机实际使用的 `.remote-dev.json` 已忽略，不会提交内网服务器地址。
 
-面向 Triton 和算子优化初学者的完整学习资料参见：[《从零学习 Triton 算子开发与优化：BW1000 与 C500 十题实战》](docs/tutorial/README.md)。教程从编程模型、正确性和性能测量开始，并逐题解释 10 个优化实现的数学依据、kernel 映射、参数选择与跨平台迁移差异。
+面向 Triton 和算子优化初学者的完整学习资料参见：[《从零学习 Triton 算子开发与优化：三平台十题实战》](docs/tutorial/README.md)。教程从编程模型、正确性和性能测量开始，并逐题解释 10 个优化实现的数学依据、kernel 映射、参数选择与跨平台迁移差异。
 
 ## 原创声明
 

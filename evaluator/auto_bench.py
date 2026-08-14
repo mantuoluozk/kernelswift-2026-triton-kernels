@@ -11,6 +11,11 @@ from pathlib import Path
 
 import torch
 
+try:
+    import torch_npu  # noqa: F401 - registers the Ascend torch.npu backend
+except ImportError:
+    pass
+
 
 class KsCompareError(Exception):
     pass
@@ -125,18 +130,13 @@ class _RewriteDeviceStr(ast.NodeTransformer):
 
 
 def _rewrite_device_for_backend(tree: ast.AST) -> None:
-    """In-place: remap 'npu' device strings to the available accelerator.
-
-    ks competition files are written against Ascend ('npu'); on other backends
-    (mlu/cuda) the literal is rejected by torch at runtime, so rewrite it
-    before exec. No-op on npu hosts or when no accelerator is present.
-    """
+    """Remap accelerator device literals to the backend available on this host."""
     target = _auto_accel_name()
-    if target is None or target == "npu":
+    if target is None:
         return
-    _RewriteDeviceStr("npu", target).visit(tree)
-    if target == "gcu":
-        _RewriteDeviceStr("cuda", target).visit(tree)
+    for source in ("cuda", "npu", "mlu", "gcu"):
+        if source != target:
+            _RewriteDeviceStr(source, target).visit(tree)
     ast.fix_missing_locations(tree)
 
 
@@ -207,7 +207,7 @@ def _iter_accelerators():
     """Yield (name, module) for each available accelerator backend.
 
     Covers cuda / npu (Ascend) / mlu (Cambricon) / gcu (Enflame).
-    Add more backends here asneeded;
+    Add more backends here as needed;
     set_seed / sync_devices / device detection all derive from this.
     """
     for name in ("gcu", "cuda", "npu", "mlu"):
