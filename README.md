@@ -4,7 +4,7 @@
 
 **在线教程：** [从零学习 Triton 算子开发与优化——三平台十题实战](https://mantuoluozk.github.io/kernelswift-2026-triton-kernels/)
 
-本仓库包含 2026 KernelSwift 算子创新大赛赛道一的 Triton 优化实现。代码按芯片平台组织，当前已完成并验证海光 BW1000、沐曦 C500 与 Ascend 910B 三个平台的 10 个任务。
+本仓库包含 2026 KernelSwift 算子创新大赛赛道一的 Triton 优化实现。代码按芯片平台组织，当前已完成并验证海光 BW1000、沐曦 C500 与昇腾 Ascend 910B 三个平台的 10 个任务。
 
 ## 仓库结构
 
@@ -37,7 +37,7 @@ kernelswift-2026-triton-kernels/
 | --- | ---: | --- | --- |
 | 海光 BW1000 | 10 / 10 | 全部通过 | 可提交 |
 | 沐曦 C500（25% sGPU） | 10 / 10 | 全部通过 | 可复现 |
-| Ascend 910B1 | 10 / 10 | 全部通过 | 可复现 |
+| 昇腾 Ascend 910B1 | 10 / 10 | 全部通过 | 可复现 |
 
 ## BW1000 优化结果
 
@@ -79,7 +79,7 @@ kernelswift-2026-triton-kernels/
 
 > C500 合计同样只用于直观汇总，不代表官方综合评分。完整环境配置、显卡监控、Tensor 布局和海光迁移差异参见 [C500 平台说明](platforms/muxi_c500/README.md)与 [C500 环境与迁移指南](platforms/muxi_c500/C500_环境与迁移指南.md)。
 
-## Ascend 910B 优化结果
+## 昇腾 Ascend 910B 优化结果
 
 测试环境为 Ascend 910B1、CANN 9.0.0、PyTorch/torch_npu 2.10.0、Triton-Ascend 3.2.1、Python 3.11.15。评测参数为 `warmup=200`、`repeat=500`，10 项正确性检查全部通过。
 

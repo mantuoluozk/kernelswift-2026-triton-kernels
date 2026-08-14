@@ -16,18 +16,21 @@
 
 ## 十题知识地图
 
-| 任务 | 主要知识点 | 难度 | BW1000 加速比 |
-| --- | --- | ---: | ---: |
-| [Task01 GroupedTopk](tasks/01_GroupedTopk.md) | 单调性、Top-k、行归约、消去 Softmax 分母 | 2/5 | 3.098x |
-| [Task02 FusedMoE](tasks/02_FusedMoE.md) | 规则化 GEMM、SiLU 融合、路由、以算代分发 | 5/5 | 17.915x |
-| [Task03 FlexAttention](tasks/03_FlexAttention.md) | 因果 Attention、在线 Softmax、流式 K/V | 5/5 | 1.657x |
-| [Task04 SPLADE](tasks/04_SPLADESparsePooler.md) | GELU+LayerNorm、GEMM+池化、单调变换 | 5/5 | 2.928x |
-| [Task05 RotaryEmbedding](tasks/05_RotaryEmbedding.md) | 广播消除、扁平索引、三角函数融合 | 2/5 | 2.599x |
-| [Task06 MMEncoderAttention](tasks/06_MMEncoderAttention.md) | 非因果 Attention、布局直读、在线 Softmax | 4/5 | 1.662x |
-| [Task07 mhc_post](tasks/07_mhc_post.md) | 固定小矩阵展开、数据复用、BF16 写回 | 3/5 | 11.509x |
-| [Task08 Sinkhorn](tasks/08_hc_split_sinkhorn.md) | 4×4 小矩阵、迭代归一化、寄存器驻留 | 3/5 | 13.573x |
-| [Task09 RandomAugmentation](tasks/09_CentreRandomAugmentation.md) | 随机数语义、中心化归约、刚体变换融合 | 4/5 | 5.553x |
-| [Task10 backward](tasks/10_head_compute_mix_bwd.md) | 手写反向、多个梯度归约、静态专用化 | 3/5 | 1.846x |
+| 任务 | 主要知识点 | 难度 | BW1000 | C500 | 昇腾 910B |
+| --- | --- | ---: | ---: | ---: | ---: |
+| [Task01 GroupedTopk](tasks/01_GroupedTopk.md) | 单调性、Top-k、行归约、消去 Softmax 分母 | 2/5 | 3.098× | 3.442× | 2.478× |
+| [Task02 FusedMoE](tasks/02_FusedMoE.md) | 规则化 GEMM、SiLU 融合、路由、以算代分发 | 5/5 | 17.915× | 18.943× | 11.446× |
+| [Task03 FlexAttention](tasks/03_FlexAttention.md) | 因果 Attention、在线 Softmax、流式 K/V | 5/5 | 1.657× | 1.247× | 1.225× |
+| [Task04 SPLADE](tasks/04_SPLADESparsePooler.md) | GELU+LayerNorm、GEMM+池化、单调变换 | 5/5 | 2.928× | 2.384× | 1.094× |
+| [Task05 RotaryEmbedding](tasks/05_RotaryEmbedding.md) | 广播消除、扁平索引、三角函数融合 | 2/5 | 2.599× | 2.387× | 1.869× |
+| [Task06 MMEncoderAttention](tasks/06_MMEncoderAttention.md) | 非因果 Attention、布局直读、在线 Softmax | 4/5 | 1.662× | 1.285× | 1.162× |
+| [Task07 mhc_post](tasks/07_mhc_post.md) | 固定小矩阵展开、数据复用、BF16 写回 | 3/5 | 11.509× | 16.745× | 2.406× |
+| [Task08 Sinkhorn](tasks/08_hc_split_sinkhorn.md) | 4×4 小矩阵、迭代归一化、寄存器驻留 | 3/5 | 13.573× | 10.697× | 9.203× |
+| [Task09 RandomAugmentation](tasks/09_CentreRandomAugmentation.md) | 随机数语义、中心化归约、刚体变换融合 | 4/5 | 5.553× | 5.797× | 3.389× |
+| [Task10 backward](tasks/10_head_compute_mix_bwd.md) | 手写反向、多个梯度归约、静态专用化 | 3/5 | 1.846× | 1.636× | 1.064× |
+| **十项简单合计** | 仅作直观比较 | — | **6.702×** | **7.071×** | **3.752×** |
+
+三列数据均使用同一官方评测器和 `warmup=200`、`repeat=500` 参数，10 项正确性全部通过。昇腾 910B 的 PyTorch/Triton 十项耗时简单合计为 `17.297547/4.610002 ms`；完整逐项耗时、环境与迁移说明见 [Ascend 910B 平台 README](../../platforms/ascend910b/README.md)。简单合计不代表官方跨任务或跨平台评分。
 
 ## 学完后应该具备的能力
 

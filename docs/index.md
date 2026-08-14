@@ -2,7 +2,7 @@
 
 本教程以 KernelSwift 2026 Triton 优化赛道的 10 个任务为例，介绍如何从 PyTorch 参考实现出发，完成语义分析、Triton kernel 编写、正确性验证和性能优化。
 
-当前代码和性能数据来自海光 BW1000（`gfx936`）、沐曦 C500（25% sGPU）和 Ascend 910B1 三个平台。教程面向第一次接触 Triton 或 GPU/DCU/NPU 算子优化的读者，也可用于比较同一算法在不同 Triton 后端上的迁移表现。
+当前代码和性能数据来自海光 BW1000（`gfx936`）、沐曦 C500（25% sGPU）和昇腾 Ascend 910B1 三个平台。教程面向第一次接触 Triton 或 GPU/DCU/NPU 算子优化的读者，也可用于比较同一算法在不同 Triton 后端上的迁移表现。
 
 !!! info "建议的阅读方式"
     初学者建议依次阅读基础章节，再进入十题实战。已经熟悉 Triton 编程模型的读者，可以直接从[算子优化方法论](tutorial/03_算子优化方法论.md)或具体任务开始。
@@ -21,7 +21,7 @@
 
 ## 十个任务
 
-| 任务 | 算子 | 主要知识点 | BW1000 | C500 | 910B |
+| 任务 | 算子 | 主要知识点 | BW1000 | C500 | 昇腾 910B |
 | --- | --- | --- | ---: | ---: | ---: |
 | [Task 01](tutorial/tasks/01_GroupedTopk.md) | GroupedTopk | 单调变换、Top-k | 3.098× | 3.442× | 2.478× |
 | [Task 02](tutorial/tasks/02_FusedMoE.md) | FusedMoE | 规则化 GEMM、路由融合 | 17.915× | 18.943× | 11.446× |
