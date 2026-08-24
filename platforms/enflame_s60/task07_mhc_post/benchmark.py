@@ -34,7 +34,7 @@ def main():
     parser.add_argument("--atol", type=float, default=1e-2)
     parser.add_argument("--rtol", type=float, default=1e-2)
     parser.add_argument("--block-size", type=int, default=2048)
-    parser.add_argument("--num-warps", type=int, default=4)
+    parser.add_argument("--num-warps", type=int, default=1)
     args = parser.parse_args()
 
     if not torch.cuda.is_available():

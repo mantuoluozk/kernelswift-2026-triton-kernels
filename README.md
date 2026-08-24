@@ -39,7 +39,7 @@ kernelswift-2026-triton-kernels/
 | 海光 BW1000 | 10 / 10 | 9.400403 ms | 1.402577 ms | 6.702× | 全部通过 |
 | 沐曦 C500（25% sGPU） | 10 / 10 | 11.519283 ms | 1.629119 ms | 7.071× | 全部通过 |
 | 昇腾 Ascend 910B1 | 10 / 10 | 17.297547 ms | 4.610002 ms | 3.752× | 全部通过 |
-| 燧原 S60 | 10 / 10 | 16.828573 ms | 34.657672 ms | 0.486× | 全部通过 |
+| 燧原 S60 | 10 / 10 | 16.848352 ms | 11.016043 ms | 1.529× | 全部通过 |
 
 四平台均使用同一官方评测器和 `warmup=200`、`repeat=500` 参数。合计仅用于直观汇总，不代表官方跨任务或跨平台评分；每个任务的优化前后数据见下方对应平台完整表格。
 
@@ -115,13 +115,13 @@ kernelswift-2026-triton-kernels/
 | [Task04](platforms/enflame_s60/task04_splade_sparse_pooler/README.md) | SPLADESparsePooler | 0.940885 | 1.576604 | 0.597x | PASS | 展平二维 grid，拆分池化 |
 | [Task05](platforms/enflame_s60/task05_music_flamingo_rotary_embedding/README.md) | MusicFlamingoRotaryEmbedding | 0.435885 | 0.342935 | 1.271x | PASS | 逐元素融合直接复用 |
 | [Task06](platforms/enflame_s60/task06_mm_encoder_attention/README.md) | MMEncoderAttention | 0.274237 | 0.335449 | 0.818x | PASS | 32 行 tile、1 warp |
-| [Task07](platforms/enflame_s60/task07_mhc_post/README.md) | mhc_post | 4.194152 | 29.462086 | 0.142x | PASS | 全 Triton 正确，后端调度待优化 |
+| [Task07](platforms/enflame_s60/task07_mhc_post/README.md) | mhc_post | 4.213931 | 5.820457 | 0.724x | PASS | 厂商 einsum + Triton epilogue |
 | [Task08](platforms/enflame_s60/task08_hc_split_sinkhorn/README.md) | hc_split_sinkhorn | 2.015706 | 0.225345 | 8.945x | PASS | 4×4 标量化 Sinkhorn |
 | [Task09](platforms/enflame_s60/task09_centre_random_augmentation/README.md) | CentreRandomAugmentation | 2.924597 | 1.422888 | 2.055x | PASS | 随机变换融合直接复用 |
 | [Task10](platforms/enflame_s60/task10_head_compute_mix_bwd/README.md) | head_compute_mix_bwd | 0.345480 | 0.288682 | 1.197x | PASS | `% 4` 索引与混合末级归约 |
-| **十项简单合计** | — | **16.828573** | **34.657672** | **0.486x** | **全部通过** | — |
+| **十项简单合计** | — | **16.848352** | **11.016043** | **1.529x** | **全部通过** | — |
 
-> S60 的简单合计受 Task07 明显影响，不代表逐题积分。完整环境、`efsmi`/`TOPS_VISIBLE_DEVICES` 命令、段错误排查与海光迁移差异参见 [S60 平台说明](platforms/enflame_s60/README.md)和 [S60 环境与迁移指南](platforms/enflame_s60/S60_环境与迁移指南.md)。
+> S60 的 Task07 经重新划分融合边界后由 29.462086 ms 降至 5.820457 ms，十项简单合计提升到 1.529×。完整环境、`efsmi`/`TOPS_VISIBLE_DEVICES` 命令、段错误排查与迁移差异参见 [S60 平台说明](platforms/enflame_s60/README.md)和 [S60 环境与迁移指南](platforms/enflame_s60/S60_环境与迁移指南.md)。
 
 ## 复现 BW1000 结果
 

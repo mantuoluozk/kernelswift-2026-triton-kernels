@@ -5,73 +5,40 @@ import triton.language as tl
 
 
 @triton.jit
-def _mhc_post_kernel(
+def _mhc_post_einsum_epilogue_kernel(
     x_ptr,
-    residual_ptr,
     post_ptr,
-    comb_ptr,
+    term2_ptr,
     output_ptr,
     hidden_size: tl.constexpr,
     block_size: tl.constexpr,
 ):
     row = tl.program_id(0)
-    hidden_offsets = tl.program_id(1) * block_size + tl.arange(0, block_size)
-    mask = hidden_offsets < hidden_size
-
-    x = tl.load(x_ptr + row * hidden_size + hidden_offsets, mask=mask, other=0.0)
-    residual_base = row * 4 * hidden_size + hidden_offsets
-    r0 = tl.load(residual_ptr + residual_base, mask=mask, other=0.0)
-    r1 = tl.load(
-        residual_ptr + residual_base + hidden_size, mask=mask, other=0.0
-    )
-    r2 = tl.load(
-        residual_ptr + residual_base + 2 * hidden_size, mask=mask, other=0.0
-    )
-    r3 = tl.load(
-        residual_ptr + residual_base + 3 * hidden_size, mask=mask, other=0.0
-    )
-
+    hidden = tl.program_id(1) * block_size + tl.arange(0, block_size)
+    mask = hidden < hidden_size
+    x = tl.load(x_ptr + row * hidden_size + hidden, mask=mask, other=0.0)
     post_base = row * 4
+    output_base = row * 4 * hidden_size + hidden
+
     p0 = tl.load(post_ptr + post_base)
     p1 = tl.load(post_ptr + post_base + 1)
     p2 = tl.load(post_ptr + post_base + 2)
     p3 = tl.load(post_ptr + post_base + 3)
-
-    comb_base = row * 16
-    c00 = tl.load(comb_ptr + comb_base)
-    c01 = tl.load(comb_ptr + comb_base + 1)
-    c02 = tl.load(comb_ptr + comb_base + 2)
-    c03 = tl.load(comb_ptr + comb_base + 3)
-    c10 = tl.load(comb_ptr + comb_base + 4)
-    c11 = tl.load(comb_ptr + comb_base + 5)
-    c12 = tl.load(comb_ptr + comb_base + 6)
-    c13 = tl.load(comb_ptr + comb_base + 7)
-    c20 = tl.load(comb_ptr + comb_base + 8)
-    c21 = tl.load(comb_ptr + comb_base + 9)
-    c22 = tl.load(comb_ptr + comb_base + 10)
-    c23 = tl.load(comb_ptr + comb_base + 11)
-    c30 = tl.load(comb_ptr + comb_base + 12)
-    c31 = tl.load(comb_ptr + comb_base + 13)
-    c32 = tl.load(comb_ptr + comb_base + 14)
-    c33 = tl.load(comb_ptr + comb_base + 15)
-
-    out0 = x * p0 + r0 * c00 + r1 * c10 + r2 * c20 + r3 * c30
-    out1 = x * p1 + r0 * c01 + r1 * c11 + r2 * c21 + r3 * c31
-    out2 = x * p2 + r0 * c02 + r1 * c12 + r2 * c22 + r3 * c32
-    out3 = x * p3 + r0 * c03 + r1 * c13 + r2 * c23 + r3 * c33
-
-    output_base = row * 4 * hidden_size + hidden_offsets
-    tl.store(output_ptr + output_base, out0, mask=mask)
-    tl.store(output_ptr + output_base + hidden_size, out1, mask=mask)
-    tl.store(output_ptr + output_base + 2 * hidden_size, out2, mask=mask)
-    tl.store(output_ptr + output_base + 3 * hidden_size, out3, mask=mask)
+    t0 = tl.load(term2_ptr + output_base, mask=mask, other=0.0)
+    t1 = tl.load(term2_ptr + output_base + hidden_size, mask=mask, other=0.0)
+    t2 = tl.load(term2_ptr + output_base + 2 * hidden_size, mask=mask, other=0.0)
+    t3 = tl.load(term2_ptr + output_base + 3 * hidden_size, mask=mask, other=0.0)
+    tl.store(output_ptr + output_base, x * p0 + t0, mask=mask)
+    tl.store(output_ptr + output_base + hidden_size, x * p1 + t1, mask=mask)
+    tl.store(output_ptr + output_base + 2 * hidden_size, x * p2 + t2, mask=mask)
+    tl.store(output_ptr + output_base + 3 * hidden_size, x * p3 + t3, mask=mask)
 
 
 class ModelNew(nn.Module):
     def __init__(self):
         super().__init__()
         self.block_size = 2048
-        self.num_warps = 4
+        self.num_warps = 1
 
     def forward(
         self,
@@ -80,12 +47,19 @@ class ModelNew(nn.Module):
         post_layer_mix: torch.Tensor,
         comb_res_mix: torch.Tensor,
     ) -> torch.Tensor:
-        output = torch.empty((2, 4096, 4, 1280), device=x.device, dtype=torch.bfloat16)
-        _mhc_post_kernel[(8192, 1)](
+        # torch_gcu already has an efficient implementation of the batched 4x4
+        # contraction. Triton fuses the remaining broadcast multiply, add and
+        # BF16 conversion into one epilogue.
+        term2 = torch.einsum("abmn,abmc->abnc", comb_res_mix, residual.float())
+        output = torch.empty(
+            (2, 4096, 4, 1280), device=x.device, dtype=torch.bfloat16
+        )
+        _mhc_post_einsum_epilogue_kernel[
+            (8192, triton.cdiv(1280, self.block_size))
+        ](
             x,
-            residual,
             post_layer_mix,
-            comb_res_mix,
+            term2,
             output,
             hidden_size=1280,
             block_size=self.block_size,

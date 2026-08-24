@@ -1,5 +1,7 @@
 # Task06：MMEncoderAttention——非因果 Attention 的规则化在线计算
 
+> 本章以海光 BW1000 的实现和实测数据为主线。其他芯片的参数、限制与结果统一放在对应平台迁移章节中。
+
 代码：[reference.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task06_mm_encoder_attention/reference.py) · [solution.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task06_mm_encoder_attention/solution.py) · [benchmark.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task06_mm_encoder_attention/benchmark.py)
 
 核心 kernel：`_attention_kernel`。
@@ -124,7 +126,3 @@ Speedup: 1.662x
 3. 用 hipprof 观察不同 M 下的 VGPR 和 occupancy；
 4. 支持 `num_kv_heads<heads`，实现 `kv_head=head//group_size`；
 5. 与官方 fused attention 教程对照，理解长序列下为何需要更复杂的 pipeline。
-
-## S60 实测补充
-
-海光的 64 行/4 warp 配置在 S60 上约 9.88 ms；调整为 `BLOCK_M=32`、`num_warps=1` 后正式为 0.335449 ms，接近 PyTorch 的 0.274237 ms。

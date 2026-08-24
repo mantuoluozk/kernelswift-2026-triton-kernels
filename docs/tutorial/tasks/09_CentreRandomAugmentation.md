@@ -1,5 +1,7 @@
 # Task09：CentreRandomAugmentation——优化随机算子首先要保持随机语义
 
+> 本章以海光 BW1000 的实现和实测数据为主线。其他芯片的参数、限制与结果统一放在对应平台迁移章节中。
+
 代码：[reference.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task09_centre_random_augmentation/reference.py) · [solution.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task09_centre_random_augmentation/solution.py) · [benchmark.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task09_centre_random_augmentation/benchmark.py)
 
 核心 kernel：`_centre_random_augmentation_kernel`。
@@ -163,7 +165,3 @@ Speedup: 5.553x
 3. 比较 AoS 和 SoA 布局的带宽；
 4. 故意合并三次 rand，观察固定 seed 下结果是否变化；
 5. 测试 mask 全 0、部分 0 和 N 非 2 次幂的边界。
-
-## S60 实测补充
-
-中心化、随机旋转和平移融合正式为 `2.924597 → 1.422888 ms`（2.055×），同时通过固定 seed 的输出检查。

@@ -1,5 +1,7 @@
 # Task02：FusedMoE——动态稀疏计算为何反而适合规则化
 
+> 本章以海光 BW1000 的实现和实测数据为主线。其他芯片的参数、限制与结果统一放在对应平台迁移章节中。
+
 代码：[reference.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task02_fused_moe/reference.py) · [solution.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task02_fused_moe/solution.py) · [benchmark.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task02_fused_moe/benchmark.py)
 
 核心 kernel：`_gate_up_kernel`、`_down_kernel`、`_route_kernel`。
@@ -186,7 +188,3 @@ Speedup: 17.915x
 2. 把 gate/up 两次 `tl.dot` 改为一次输出 128 列的 dot，再切分，比较寄存器和性能；
 3. 扫描 `M∈{16,32,64}`、`num_warps∈{2,4,8}`；
 4. 设计大专家数版本：先按专家排序 token，再执行 grouped GEMM。
-
-## S60 实测补充
-
-分阶段 GEMM、SiLU 与路由方案可直接迁移，正式为 `5.009264 → 0.385704 ms`（12.987×），也是 S60 收益最大的任务之一。

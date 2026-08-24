@@ -1,5 +1,7 @@
 # Task07：mhc_post——把固定 4×4 混合展开成数据复用
 
+> 本章以海光 BW1000 的实现和实测数据为主线。其他芯片的参数、限制与结果统一放在对应平台迁移章节中。
+
 代码：[reference.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task07_mhc_post/reference.py) · [solution.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task07_mhc_post/solution.py) · [benchmark.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task07_mhc_post/benchmark.py)
 
 核心 kernel：`_mhc_post_kernel`。
@@ -114,7 +116,3 @@ Speedup: 11.509x
 3. 为 hc_mult=8 比较手工展开、循环和 `tl.dot`；
 4. 用 FP32 输出检查纯累加顺序误差，再加入 BF16 store；
 5. 估算 reference 中间张量的字节数与优化版最小读写量。
-
-## S60 实测补充
-
-全 Triton 实现正确，但正式为 `4.194152 → 29.462086 ms`（0.142×）。2048 元素粗 tile 比 256 元素拆分更快，瓶颈仍在当前后端的大张量 program 调度。

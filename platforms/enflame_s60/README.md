@@ -11,6 +11,7 @@
 - torch_gcu：2.10.0+3.8.0.2
 - Triton：3.6.0
 - triton_gcu：3.6.0+1.0.20260722
+- Triton target：`gcu300`，后端报告 `warp_size=12`
 
 实例已预装完整软件栈，因此直接使用系统虚拟环境，没有覆盖厂商 PyTorch、驱动或固件。输入必须显式放到 `gcu`；`torch_gcu` 提供部分 CUDA 迁移兼容，但本项目评测器按真实后端使用 `torch.gcu.synchronize()`。
 
@@ -65,12 +66,12 @@ TOPS_VISIBLE_DEVICES=0 python evaluator/auto_bench.py \
 | Task04 · SPLADESparsePooler | 0.940885 | 1.576604 | 0.597× | PASS | 拆分厂商 GEMM/LayerNorm 与 Triton 池化 |
 | Task05 · RotaryEmbedding | 0.435885 | 0.342935 | 1.271× | PASS | 逐元素融合可复用 |
 | Task06 · MMEncoderAttention | 0.274237 | 0.335449 | 0.818× | PASS | query tile 调为 32，`num_warps=1` |
-| Task07 · mhc_post | 4.194152 | 29.462086 | 0.142× | PASS | 全 Triton 正确；大 tile/launch 调度仍是瓶颈 |
+| Task07 · mhc_post | 4.213931 | 5.820457 | 0.724× | PASS | 厂商 einsum + Triton epilogue，1 warp |
 | Task08 · hc_split_sinkhorn | 2.015706 | 0.225345 | 8.945× | PASS | 4×4 Sinkhorn 标量化可复用 |
 | Task09 · CentreRandomAugmentation | 2.924597 | 1.422888 | 2.055× | PASS | 随机变换融合可复用 |
 | Task10 · head_compute_mix_bwd | 0.345480 | 0.288682 | 1.197× | PASS | `% 4` 索引；Triton 点算子与 torch_gcu 归约混合 |
-| **十项简单合计** | **16.828573** | **34.657672** | **0.486×** | **全部通过** | — |
+| **十项简单合计** | **16.848352** | **11.016043** | **1.529×** | **全部通过** | — |
 
-合计只用于直观汇总，不代表比赛官方综合评分。Task07 的结果表明，跨后端迁移首先要保证正确性，但同一源码并不自动获得相同的 launch 和大向量效率；逐题独立排名时应继续针对 S60 后端优化该项。
+合计只用于直观汇总，不代表比赛官方综合评分。Task07 通过保留厂商高效 einsum、使用 Triton 融合广播乘法/加法/BF16 写回，从 29.462086 ms 降至 5.820457 ms；它仍未反超 PyTorch，但证明跨后端需要重新选择融合边界。
 
 环境命令、常见故障和从海光迁移的差异见 [S60 环境与迁移指南](S60_环境与迁移指南.md)。

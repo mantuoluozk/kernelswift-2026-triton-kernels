@@ -1,5 +1,7 @@
 # Task08：hc_split_sinkhorn——让 4×4 矩阵在寄存器里迭代 20 轮
 
+> 本章以海光 BW1000 的实现和实测数据为主线。其他芯片的参数、限制与结果统一放在对应平台迁移章节中。
+
 代码：[reference.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task08_hc_split_sinkhorn/reference.py) · [solution.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task08_hc_split_sinkhorn/solution.py) · [benchmark.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task08_hc_split_sinkhorn/benchmark.py)
 
 核心 kernel：`_hc_split_sinkhorn_kernel`。
@@ -155,7 +157,3 @@ Speedup: 13.573x
 3. 扩展到 8×8，测试寄存器压力和 num_warps；
 4. 把 eps 放在不同位置，观察语义与误差变化；
 5. 设计大矩阵分块 Sinkhorn，思考跨 program 归约为何需要多阶段。
-
-## S60 实测补充
-
-固定 4×4 的标量化和片上迭代可直接复用，正式为 `2.015706 → 0.225345 ms`（8.945×）。

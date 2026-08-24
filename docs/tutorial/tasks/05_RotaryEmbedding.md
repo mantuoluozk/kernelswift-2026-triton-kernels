@@ -1,5 +1,7 @@
 # Task05：MusicFlamingoRotaryEmbedding——把广播图还原成坐标公式
 
+> 本章以海光 BW1000 的实现和实测数据为主线。其他芯片的参数、限制与结果统一放在对应平台迁移章节中。
+
 代码：[reference.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task05_music_flamingo_rotary_embedding/reference.py) · [solution.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task05_music_flamingo_rotary_embedding/solution.py) · [benchmark.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task05_music_flamingo_rotary_embedding/benchmark.py)
 
 核心 kernel：`_rotary_embedding_kernel`。
@@ -130,7 +132,3 @@ Speedup: 2.599x
 3. 只输出 cos 或 sin，测量共享计算对双输出的收益；
 4. 测试非常大的 timestamp，研究三角函数精度；
 5. 尝试读取预计算 `position_angles`，比较“多一次显存读取”和“现场计算”的取舍。
-
-## S60 实测补充
-
-广播消除与三角函数融合可复用，正式为 `0.435885 → 0.342935 ms`（1.271×）。

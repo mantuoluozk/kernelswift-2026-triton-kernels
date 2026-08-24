@@ -11,6 +11,6 @@
 | [`bw1000/`](bw1000/README.md) | 海光 BW1000 | 10/10 PASS | 9.400403 ms | 1.402577 ms | 6.702× |
 | [`muxi_c500/`](muxi_c500/README.md) | 沐曦 C500（25% sGPU） | 10/10 PASS | 11.519283 ms | 1.629119 ms | 7.071× |
 | [`ascend910b/`](ascend910b/README.md) | 昇腾 Ascend 910B1 | 10/10 PASS | 17.297547 ms | 4.610002 ms | 3.752× |
-| [`enflame_s60/`](enflame_s60/README.md) | 燧原 S60 | 10/10 PASS | 16.828573 ms | 34.657672 ms | 0.486× |
+| [`enflame_s60/`](enflame_s60/README.md) | 燧原 S60 | 10/10 PASS | 16.848352 ms | 11.016043 ms | 1.529× |
 
 合计数据仅用于直观汇总，不代表官方跨任务或跨平台评分；逐题结果以各平台 README 为准。

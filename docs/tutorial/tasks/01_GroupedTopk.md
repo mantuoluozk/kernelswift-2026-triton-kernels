@@ -1,5 +1,7 @@
 # Task01：GroupedTopk——从“照着算”到“证明后少算”
 
+> 本章以海光 BW1000 的实现和实测数据为主线。其他芯片的参数、限制与结果统一放在对应平台迁移章节中。
+
 代码：[reference.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task01_grouped_topk/reference.py) · [solution.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task01_grouped_topk/solution.py) · [benchmark.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task01_grouped_topk/benchmark.py)
 
 核心 kernel：`_grouped_topk_kernel`。
@@ -161,7 +163,3 @@ Speedup: 3.098x
 2. 用 `tl.static_range` 写可配置的 Top-k，并比较与手工展开的性能；
 3. 支持 sigmoid scoring。注意 sigmoid 也单调，但最终 renormalize 的公共因子推导与 Softmax 不同；
 4. 构造包含相同 logits 的输入，研究 tie-breaking。
-
-## S60 实测补充
-
-同一融合算法在 S60 上正式为 `0.457112 → 0.331359 ms`（1.380×），`num_warps=1` 仍是较稳妥配置。

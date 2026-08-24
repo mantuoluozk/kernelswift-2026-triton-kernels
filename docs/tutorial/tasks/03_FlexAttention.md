@@ -1,5 +1,7 @@
 # Task03：FlexAttention——从完整注意力矩阵到在线 Softmax
 
+> 本章以海光 BW1000 的实现和实测数据为主线。其他芯片的参数、限制与结果统一放在对应平台迁移章节中。
+
 代码：[reference.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task03_flex_attention/reference.py) · [solution.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task03_flex_attention/solution.py) · [benchmark.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task03_flex_attention/benchmark.py)
 
 核心 kernel：`_causal_attention_kernel`。
@@ -166,7 +168,3 @@ Speedup: 1.657x
 3. 跳过完全位于因果边界右侧的 K block；
 4. 支持不同 `num_kv_heads`，理解 GQA 中 K/V head 映射；
 5. 记录 BLOCK_M/N 对 VGPR、occupancy 和耗时的影响。
-
-## S60 实测补充
-
-正式为 `0.231255 → 0.286620 ms`（0.807×）。1 warp 短测约 0.29 ms，而 4 warps 退化到约 3.88 ms，说明 warp 参数必须按后端重测。

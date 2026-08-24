@@ -1,5 +1,7 @@
 # Task10：head_compute_mix_bwd——从链式求导到融合反向 kernel
 
+> 本章以海光 BW1000 的实现和实测数据为主线。其他芯片的参数、限制与结果统一放在对应平台迁移章节中。
+
 代码：[reference.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task10_head_compute_mix_bwd/reference.py) · [solution.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task10_head_compute_mix_bwd/solution.py) · [benchmark.py](https://github.com/mantuoluozk/kernelswift-2026-triton-kernels/blob/main/platforms/bw1000/task10_head_compute_mix_bwd/benchmark.py)
 
 核心 kernel：`_head_compute_mix_bwd_kernel`。
@@ -149,12 +151,6 @@ Speedup: 1.846x
 
 提升来自融合，但单 program 大归约也限制了进一步加速，所以不如 Task08 的小矩阵融合夸张。
 
-### Ascend 910B 的 UB 分块
-
-8192 元素单 program 在 910B 上编译失败：需要约 320 KiB UB，而后端可用空间约 192 KiB。910B 版本改为两个 4096 元素 program，分别写回输入梯度，并通过 FP32 `tl.atomic_add` 汇总五个参数梯度。正式结果为 `0.359121 → 0.337515 ms`，加速 `1.064×`。
-
-这是“硬件资源改变 program 映射”的典型案例：数学公式完全不变，但 tile 必须缩小，并引入跨 program 归约机制。
-
 ## 10. 迁移练习
 
 1. 写两阶段归约版本，找到 n 增大后的交叉点；
@@ -162,7 +158,3 @@ Speedup: 1.846x
 3. 把 channel 数改为 8/16，使用二维 reshape 后沿 batch/token 归约；
 4. 使用 `torch.autograd.gradcheck` 的 FP64 小规模版本验证导数；
 5. 扫描 `BLOCK_SIZE` 和 `num_warps`，结合 hipprof 查看寄存器压力。
-
-## S60 实测补充
-
-当前后端中 `offsets & 3` 会段错误，改为 `% 4` 后稳定。Triton 融合逐元素反向、torch_gcu 完成末级归约，正式为 `0.345480 → 0.288682 ms`（1.197×）。
