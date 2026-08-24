@@ -166,3 +166,7 @@ Speedup: 1.657x
 3. 跳过完全位于因果边界右侧的 K block；
 4. 支持不同 `num_kv_heads`，理解 GQA 中 K/V head 映射；
 5. 记录 BLOCK_M/N 对 VGPR、occupancy 和耗时的影响。
+
+## S60 实测补充
+
+正式为 `0.231255 → 0.286620 ms`（0.807×）。1 warp 短测约 0.29 ms，而 4 warps 退化到约 3.88 ms，说明 warp 参数必须按后端重测。

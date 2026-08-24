@@ -154,3 +154,7 @@ max_abs_diff ≈ 5.4e-4
 3. 支持动态 seq_lens，把硬编码 start/length 改为输入 prefix sum；
 4. 思考 sum pooling 为什么不能使用同一单调性变换；
 5. 若 vocab 更大，尝试让 program 调度顺序提高 decoder weight 的 L2 复用。
+
+## S60 实测补充
+
+S60 的二维 `grid.y=477` 无法启动，因此把 segment 和 vocab block 展平成一维。最终拆分厂商线性层与 Triton 池化，正式为 `0.940885 → 1.576604 ms`（0.597×）。

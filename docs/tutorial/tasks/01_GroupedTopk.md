@@ -161,3 +161,7 @@ Speedup: 3.098x
 2. 用 `tl.static_range` 写可配置的 Top-k，并比较与手工展开的性能；
 3. 支持 sigmoid scoring。注意 sigmoid 也单调，但最终 renormalize 的公共因子推导与 Softmax 不同；
 4. 构造包含相同 logits 的输入，研究 tie-breaking。
+
+## S60 实测补充
+
+同一融合算法在 S60 上正式为 `0.457112 → 0.331359 ms`（1.380×），`num_warps=1` 仍是较稳妥配置。

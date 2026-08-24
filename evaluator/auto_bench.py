@@ -16,6 +16,11 @@ try:
 except ImportError:
     pass
 
+try:
+    import torch_gcu  # noqa: F401 - registers the Enflame torch.gcu backend
+except ImportError:
+    pass
+
 
 class KsCompareError(Exception):
     pass
@@ -104,7 +109,7 @@ def _filter_module_ast(tree):
 
 
 def _auto_accel_name() -> str | None:
-    """Name of the first available accelerator (cuda/npu/mlu), or None."""
+    """Name of the first available accelerator, or None."""
     for name, _ in _iter_accelerators():
         return name
     return None
@@ -492,7 +497,7 @@ def _detect_target_device(model, model_new, v0_inputs, v1_inputs):
     for name, _ in _iter_accelerators():
         return torch.device(name)
     raise KsCompareError(
-        "no accelerator device available (cuda/npu/mlu); "
+        "no accelerator device available (cuda/npu/mlu/gcu); "
         "cannot run accuracy or performance comparison on CPU."
     )
 

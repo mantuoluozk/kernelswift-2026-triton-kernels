@@ -162,3 +162,7 @@ Speedup: 1.846x
 3. 把 channel 数改为 8/16，使用二维 reshape 后沿 batch/token 归约；
 4. 使用 `torch.autograd.gradcheck` 的 FP64 小规模版本验证导数；
 5. 扫描 `BLOCK_SIZE` 和 `num_warps`，结合 hipprof 查看寄存器压力。
+
+## S60 实测补充
+
+当前后端中 `offsets & 3` 会段错误，改为 `% 4` 后稳定。Triton 融合逐元素反向、torch_gcu 完成末级归约，正式为 `0.345480 → 0.288682 ms`（1.197×）。
